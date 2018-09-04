@@ -180,4 +180,34 @@ export default {
   'app.setting.copyinfo': '拷贝成功，请到 src/defaultSettings.js 中替换默认配置',
   'app.setting.production.hint':
     '配置栏只在开发环境用于预览，生产环境不会展现，请拷贝后手动修改配置文件',
+
+
+    //********************************************************************************************************//
+    'radiouser.list.id' :'标识',
+    'radiouser.list.name' : '名称',
+    'jsp.user.marks' : '拨号串',
+    'radiouser.list.enabled' : '用户使能',
+    'radiouser.list.saName' : '无线用户业务属性名',
+    'radiouser.list.iaName' : '无线用户互连属性名',
+    'user.baseOprator' : '基本操作',
+    'user.update' : '修改',
+    'user.delete' : '删除',
+    'user.save' : '新增',
+    'user.select' : '查询',
+    'user.reset' : '重置',
+    'user.takeUp' : '收起',
+    'user.empty' : '清空',
+    'user.list.chosen' :'已选择',
+    'user.list.term' :'项',
+    'user.list.batchOperation' :'批量操作',
+    'user.list.more' :'更多操作',
+    'user.list.batchApproval' :'批量审批',
+    'user.list.updateDate' :'更新日期',
+    'user.list.mainGroup' :'主通话组',
+    'user.list.callName' :'通话组列表名',
+    'user.list.userInterconnectName' :'用户互联属性名',
+    'user.list.MSType' :'MS类型',
+    'user.list.manufactor' :'厂家',
+    'user.list.pleaseEnter' :'请输入',
+    
 };

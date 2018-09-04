@@ -39,6 +39,13 @@ export default {
   theme: {
     'primary-color': defaultSettings.primaryColor,
   },
+  proxy:{
+    '/api':{
+      target:'http://127.0.0.1:8080/ENMS-web-main',
+      changeOrigin : true,
+      pathRewrite :{'^/ENMS-web-main/api':''}
+    }
+  },
   externals: {
     '@antv/data-set': 'DataSet',
   },

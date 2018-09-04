@@ -10,7 +10,11 @@ export async function queryActivities() {
 }
 
 export async function queryRule(params) {
-  return request(`/api/rule?${stringify(params)}`);
+  console.log("params+"+JSON.stringify(params))
+  return request('/api/getList',{
+    method: 'POST',
+    body: params,
+  });
 }
 
 export async function removeRule(params) {

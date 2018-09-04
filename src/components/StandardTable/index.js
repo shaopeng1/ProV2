@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Table, Alert } from 'antd';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 import styles from './index.less';
 
 function initTotalList(columns) {
@@ -90,7 +91,9 @@ class StandardTable extends PureComponent {
           <Alert
             message={
               <Fragment>
-                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
+                <FormattedMessage id="user.list.chosen" defaultMessage="chosen" />
+                 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 
+                <FormattedMessage id="user.list.term" defaultMessage="term" />&nbsp;&nbsp;
                 {needTotalList.map(item => (
                   <span style={{ marginLeft: 8 }} key={item.dataIndex}>
                     {item.title}
@@ -101,7 +104,7 @@ class StandardTable extends PureComponent {
                   </span>
                 ))}
                 <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
+                  <FormattedMessage id="user.empty" defaultMessage="empty"/>
                 </a>
               </Fragment>
             }

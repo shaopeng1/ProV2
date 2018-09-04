@@ -12,10 +12,12 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
+      console.log("payload+"+JSON.stringify(payload));
       const response = yield call(queryRule, payload);
+      let res = JSON.parse(response);
       yield put({
         type: 'save',
-        payload: response,
+        payload: res,
       });
     },
     *add({ payload, callback }, { call, put }) {

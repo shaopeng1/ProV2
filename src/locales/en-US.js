@@ -184,4 +184,34 @@ export default {
   'app.setting.copyinfo': 'copy success，please replace defaultSettings in src/models/setting.js',
   'app.setting.production.hint':
     'Setting panel show in development enviorment only, please mannually modify',
+
+
+
+    /*******************************************************************************************/
+    'radiouser.list.id' :'id',
+    'radiouser.list.name' : 'name',
+    'jsp.user.marks' : 'dialer number',
+    'radiouser.list.enabled' : 'User enable',
+    'radiouser.list.saName' : 'Wireless user name',
+    'radiouser.list.iaName' : 'Wireless user interface name',
+    'user.baseOprator' : 'operation',
+    'user.update' : 'update',
+    'user.delete' : 'delete',
+    'user.save' : 'save',
+    'user.reset' : 'reset',
+    'user.select' : 'select',
+    'user.takeUp' : 'Take up',
+    'user.empty' : 'empty',
+    'user.list.chosen' :'Already chosen',
+    'user.list.term' :'term',
+    'user.list.batchOperation' :'Batch operation',
+    'user.list.more' :'More',
+    'user.list.batchApproval' :'Batch approval',
+    'user.list.mainGroup' :'Main call group',
+    'user.list.callName' :'Call list name',
+    'user.list.userInterconnectName' :'User interconnect attribute name',
+    'user.list.MSType' :'MS type',
+    'user.list.manufactor' :'Manufactor',
+    'user.list.updateDate' :'Update Date',
+    'user.list.pleaseEnter' :'Please Enter',
 };

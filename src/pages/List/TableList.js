@@ -1,26 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Icon,
-  Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
-  Modal,
-  message,
-  Badge,
-  Divider,
-  Steps,
-  Radio,
-} from 'antd';
+import { formatMessage, FormattedMessage } from 'umi/locale';
+import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
+        Steps,Radio,} from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
@@ -284,60 +267,42 @@ class TableList extends PureComponent {
 
   columns = [
     {
-      title: '规则名称',
+      title: <FormattedMessage id="radiouser.list.id" defaultMessage="id" />,
+      dataIndex: 'id',
+    },
+    {
+      title: <FormattedMessage id="jsp.user.marks" defaultMessage="dialer number" />,
+      dataIndex: 'dialString',
+      render:(text,record) => <span>{ record.radioType == '1' || record.radioType == '3' ? record.dialString : '---'}</span>
+    },
+    {
+      title: <FormattedMessage id="radiouser.list.name" defaultMessage="name" />,
       dataIndex: 'name',
     },
     {
-      title: '描述',
-      dataIndex: 'desc',
+       title: <FormattedMessage id="radiouser.list.enabled" defaultMessage="User enable" />,
+      dataIndex: 'enabled',
+      render: (text) => <span>{text == "true" ? '是' : '否'}</span>,
     },
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
-      align: 'right',
-      render: val => `${val} 万`,
-      // mark to display a total number
-      needTotal: true,
+       title: <FormattedMessage id="radiouser.list.saName" defaultMessage="Wireless user name" />,
+       dataIndex: 'saName',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-        {
-          text: status[2],
-          value: 2,
-        },
-        {
-          text: status[3],
-          value: 3,
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
+       title: <FormattedMessage id="radiouser.list.iaName" defaultMessage="radiouser.list.iaName" />,
+       dataIndex: 'iaName',
     },
     {
-      title: '上次调度时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    {
-      title: '操作',
+      title: <FormattedMessage id="user.baseOprator" defaultMessage="operation" />,
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
+          <a onClick={() => this.handleUpdateModalVisible(true, record)}>
+            <FormattedMessage id="user.update" defaultMessage="update" />
+          </a>
           <Divider type="vertical" />
-          <a href="">订阅警报</a>
+          <a href="">
+            <FormattedMessage id="user.delete" defaultMessage="delete" />
+          </a>
         </Fragment>
       ),
     },
@@ -347,10 +312,12 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'rule/fetch',
+      payload: {},
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
+
     const { dispatch } = this.props;
     const { formValues } = this.state;
 
@@ -490,6 +457,8 @@ class TableList extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
+
+//未展开搜索条件
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -498,30 +467,25 @@ class TableList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+             <FormItem label={ <FormattedMessage id="user.list.mainGroup" defaultMessage="Main call group"/>} >
+              {getFieldDecorator('name')(<Input placeholder={<FormattedMessage id="user.list.mainGroup" defaultMessage="Main call group"/>} />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+           <FormItem label={ <FormattedMessage id="user.list.callName" defaultMessage="Call list name"/> }>
+              {getFieldDecorator('name2')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
-                查询
+                <FormattedMessage id="user.select" defaultMessage="Select"/>
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
+                <FormattedMessage id="user.reset" defaultMessage="reset"/>
               </Button>
               <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
+                <FormattedMessage id="user.takeUp" defaultMessage="Take up"/> <Icon type="down" />
               </a>
             </span>
           </Col>
@@ -530,6 +494,7 @@ class TableList extends PureComponent {
     );
   }
 
+//展开搜索条件
   renderAdvancedForm() {
     const {
       form: { getFieldDecorator },
@@ -538,65 +503,50 @@ class TableList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label={ <FormattedMessage id="user.list.mainGroup" defaultMessage="Main call group"/>} >
+              {getFieldDecorator('name')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+            <FormItem label={ <FormattedMessage id="user.list.callName" defaultMessage="Call list name"/> }>
+              {getFieldDecorator('name2')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="调用次数">
-              {getFieldDecorator('number')(<InputNumber style={{ width: '100%' }} />)}
+            <FormItem label={ <FormattedMessage id="user.list.userInterconnectName" defaultMessage="User interconnect attribute name"/> }>
+              {getFieldDecorator('name')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="更新日期">
+            <FormItem label={ <FormattedMessage id="user.list.updateDate" defaultMessage="Update Date"/>}>
               {getFieldDecorator('date')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
+                <DatePicker style={{ width: '100%' }} placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />
               )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+            <FormItem label={ <FormattedMessage id="user.list.MSType" defaultMessage="MS type"/> }>
+              {getFieldDecorator('name3')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status4')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+            <FormItem label={ <FormattedMessage id="user.list.manufactor" defaultMessage="Manufactor"/> }>
+              {getFieldDecorator('name4')(<Input placeholder={<FormattedMessage id="user.list.pleastEnter"/>} />)}
             </FormItem>
           </Col>
         </Row>
         <div style={{ overflow: 'hidden' }}>
           <div style={{ float: 'right', marginBottom: 24 }}>
             <Button type="primary" htmlType="submit">
-              查询
-            </Button>
+              <FormattedMessage id="user.select" defaultMessage="Select"/>
+            </Button> 
             <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-              重置
+              <FormattedMessage id="user.reset" defaultMessage="reset"/>
             </Button>
             <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-              收起 <Icon type="up" />
+              <FormattedMessage id="user.takeUp" defaultMessage="Take up"/> <Icon type="up" />
             </a>
           </div>
         </div>
@@ -610,15 +560,17 @@ class TableList extends PureComponent {
   }
 
   render() {
-    const {
-      rule: { data },
-      loading,
-    } = this.props;
+    const {rule: { data },loading,} = this.props;
+
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
+        <Menu.Item key="remove">
+          <FormattedMessage id="user.delete" defaultMessage="delete"/>
+        </Menu.Item>
+        <Menu.Item key="approval">
+          <FormattedMessage id="user.list.batchApproval" defaultMessage="Batch approval"/>
+        </Menu.Item>
       </Menu>
     );
 
@@ -637,14 +589,16 @@ class TableList extends PureComponent {
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
+                <FormattedMessage id="user.save" defaultMessage="save" />
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
+                  <Button>
+                    <FormattedMessage id="user.list.batchOperation" defaultMessage="Batch operation"/>
+                  </Button>
                   <Dropdown overlay={menu}>
                     <Button>
-                      更多操作 <Icon type="down" />
+                      <FormattedMessage id="user.list.more" defaultMessage ="More"/> <Icon type="down" />
                     </Button>
                   </Dropdown>
                 </span>
