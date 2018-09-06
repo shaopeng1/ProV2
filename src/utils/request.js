@@ -106,7 +106,7 @@ export default function request(
 
   const expirys = options.expirys || 60;
   // options.expirys !== false, return the cache,
-  if (options.expirys !== false) {
+ /* if (options.expirys !== false) {
     const cached = sessionStorage.getItem(hashcode);
     const whenCached = sessionStorage.getItem(`${hashcode}:timestamp`);
     if (cached !== null && whenCached !== null) {
@@ -118,7 +118,7 @@ export default function request(
       sessionStorage.removeItem(hashcode);
       sessionStorage.removeItem(`${hashcode}:timestamp`);
     }
-  }
+  }*/
   return fetch(url, newOptions)
     .then(checkStatus)
     .then(cachedSave)
