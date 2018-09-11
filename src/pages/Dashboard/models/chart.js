@@ -1,13 +1,15 @@
-import { fakeChartData } from '@/services/api';
+import { fakeChartData,changeType,bSranking, } from '@/services/api';
 
 export default {
   namespace: 'chart',
 
   state: {
+    BSData: [],//交换列表
     visitData: [],
     visitData2: [],
-    salesData: [],
+    salesData: [],//销售额数据
     searchData: [],
+    rankingListData: [],//门店销售额排名
     offlineData: [],
     offlineChartData: [],
     salesTypeData: [],
@@ -34,6 +36,27 @@ export default {
         },
       });
     },
+    *bSranking({ payload, callback }, { call, put }) {
+      const response = yield call(bSranking, payload);
+      let res = JSON.parse(response);
+      yield put({
+        type: 'save',
+        payload: {
+          salesData: res.XY,
+          rankingListData: res.rankingListData,
+        },
+      });
+      if (callback) callback();
+    },
+
+  /*  *bSranking(payload, { call, put }) {
+      const response = yield call(bSranking);
+      let res = JSON.parse(response);
+      yield put({
+        type: 'save',
+        payload:response,
+      });
+    },*/
   },
 
   reducers: {
@@ -45,9 +68,11 @@ export default {
     },
     clear() {
       return {
+        BSData: [],//交换列表
         visitData: [],
         visitData2: [],
-        salesData: [],
+        rankingListData: [],//门店销售额排名
+        salesData: [],//销售额数据
         searchData: [],
         offlineData: [],
         offlineChartData: [],

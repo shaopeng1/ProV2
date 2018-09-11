@@ -1,27 +1,32 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import {Row,Col,Icon,Card,Tabs,Table,Radio,DatePicker,Tooltip,Menu,Dropdown,} from 'antd';
+import {Row,Col,Icon,Card,Tabs,Table,Radio,DatePicker,Tooltip,Menu,Dropdown,Select,} from 'antd';
 import {ChartCard,MiniArea,MiniBar,MiniProgress,Field,Bar,Pie,TimelineChart,} from '@/components/Charts';
 import Trend from '@/components/Trend';
 import NumberInfo from '@/components/NumberInfo';
 import numeral from 'numeral';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import Yuan from '@/utils/Yuan';
+import { changeType, } from '@/services/api';
 import { getTimeDistance } from '@/utils/utils';
 
 import styles from './Analysis.less';
 
 const { TabPane } = Tabs;
+const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const rankingListData = [];
-for (let i = 0; i < 7; i += 1) {
+/*const rankingListData = [];*/
+const salesExtra = [];//查询
+const salesBS = [];//交换《option》
+
+/*for (let i = 0; i < 7; i += 1) {
   rankingListData.push({
     title: `工专路 ${i} 号店`,
     total: 323234,
   });
-}
+}*/
 
 @connect(({ chart, loading }) => ({
   chart,
@@ -30,17 +35,18 @@ for (let i = 0; i < 7; i += 1) {
 class Analysis extends Component {
   constructor(props) {
     super(props);
-    this.rankingListData = [];
+    /*this.rankingListData = [];
     for (let i = 0; i < 7; i += 1) {
       this.rankingListData.push({
         title: formatMessage({ id: 'app.analysis.test' }, { no: i }),
         total: 323234,
       });
-    }
+    }*/
     this.state = {
       salesType: 'all',
       currentTabKey: '',
       loading: true,
+      selectBSData:'',//查询数据
       rangePickerValue: getTimeDistance('year'),
     };
   }
@@ -52,6 +58,8 @@ class Analysis extends Component {
   };
 
   componentDidMount() {
+    this.selectBS();
+    this.netype(1);
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
@@ -63,6 +71,72 @@ class Analysis extends Component {
         });
       }, 600);
     });
+  }
+
+  //根据交换获取排名数
+  netype = (selectedKeys, info) =>{
+   const { dispatch } = this.props;
+   dispatch({
+    type: 'chart/bSranking',
+    payload: {
+        neType : selectedKeys,
+      },
+   })
+  }
+
+  loopBS =(data)=>{
+      salesBS.splice(0,salesBS.length);
+    for(let i = 0; i<data.length; i++){
+      salesBS.push(
+        <Option value = {data[i].id}> {data[i].name} </Option>
+      )
+    }
+    return salesBS;
+  }
+
+
+
+
+  //获取交换列表
+  selectBS = e =>{
+    this.promise = changeType({'neType' : e}).then(result => {
+      salesExtra.splice(0,salesExtra.length);
+      let res = JSON.parse(result);
+      this.loopBS(res.idName);
+      salesExtra.push(
+          <div className={styles.salesExtraWrap}>
+            <div className={styles.salesExtra}>
+               统计周期：
+               <Select defaultValue="0" style={{ width: 120 }} >
+                  <Option value="0">5分钟</Option>
+                  <Option value="1">60分钟</Option>
+                  <Option value="2">每天</Option>
+                  <Option value="3">周</Option>
+                  <Option value="4">月</Option>
+                </Select>
+            </div>
+            <div className={styles.salesExtra}>
+              指标集：
+               <Select defaultValue="0" style={{ width: 200 }} >
+                  <Option value="0">交换中心话务量总计</Option>
+                  <Option value="1">交换中心成功呼叫详情</Option>
+                  <Option value="2">交换中心呼损详情</Option>
+                </Select>
+            </div>
+            <div className={styles.salesExtra}>
+              交换：
+              <Select defaultValue= {res.idName[0].id} style={{ width: 180 }} onSelect = {this.netype}>
+              {
+                salesBS
+              }
+            </Select>
+           </div>
+          </div>
+        )
+        this.setState({
+          selectBSData:salesExtra,
+        })
+    })
   }
 
   componentWillUnmount() {
@@ -125,7 +199,7 @@ class Analysis extends Component {
 
   render() {
     const { rangePickerValue, salesType, loading: propsLoding, currentTabKey } = this.state;
-    const { chart, loading: stateLoading } = this.props;
+    const { chart,chart:{ alarm } ,loading: stateLoading } = this.props;
     const {
       visitData,
       visitData2,
@@ -133,6 +207,7 @@ class Analysis extends Component {
       searchData,
       offlineData,
       offlineChartData,
+      rankingListData,
       salesTypeData,
       salesTypeDataOnline,
       salesTypeDataOffline,
@@ -159,29 +234,7 @@ class Analysis extends Component {
       </span>
     );
 
-    const salesExtra = (
-      <div className={styles.salesExtraWrap}>
-        <div className={styles.salesExtra}>
-          <a className={this.isActive('today')} onClick={() => this.selectDate('today')}>
-            <FormattedMessage id="app.analysis.all-day" defaultMessage="All Day" />
-          </a>
-          <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
-            <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
-          </a>
-          <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
-            <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
-          </a>
-          <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
-            <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
-          </a>
-        </div>
-        <RangePicker
-          value={rangePickerValue}
-          onChange={this.handleRangePickerChange}
-          style={{ width: 256 }}
-        />
-      </div>
-    );
+    
 
     const columns = [
       {
@@ -404,7 +457,7 @@ class Analysis extends Component {
 
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.salesCard}>
-            <Tabs tabBarExtraContent={salesExtra} size="large" tabBarStyle={{ marginBottom: 24 }}>
+            <Tabs tabBarExtraContent={this.state.selectBSData} size="large" tabBarStyle={{ marginBottom: 24 }}>
               <TabPane
                 tab={<FormattedMessage id="app.analysis.sales" defaultMessage="Sales" />}
                 key="sales"
@@ -433,7 +486,7 @@ class Analysis extends Component {
                         />
                       </h4>
                       <ul className={styles.rankingList}>
-                        {this.rankingListData.map((item, i) => (
+                        {rankingListData.map((item, i) => (
                           <li key={item.title}>
                             <span
                               className={`${styles.rankingItemNumber} ${
@@ -483,7 +536,7 @@ class Analysis extends Component {
                         />
                       </h4>
                       <ul className={styles.rankingList}>
-                        {this.rankingListData.map((item, i) => (
+                        {rankingListData.map((item, i) => (
                           <li key={item.title}>
                             <span className={i < 3 ? styles.active : ''}>{i + 1}</span>
                             <span>{item.title}</span>
@@ -623,30 +676,71 @@ class Analysis extends Component {
           </Col>
         </Row>
 
-        <Card
-          loading={loading}
+        <Card 
+          title="告警种类占比" 
+          bordered={false} 
           className={styles.offlineCard}
-          bordered={false}
           bodyStyle={{ padding: '0 0 32px 0' }}
           style={{ marginTop: 32 }}
         >
-          <Tabs activeKey={activeKey} onChange={this.handleTabChange}>
-            {offlineData.map(shop => (
-              <TabPane tab={<CustomTab data={shop} currentTabKey={activeKey} />} key={shop.name}>
-                <div style={{ padding: '0 24px' }}>
-                  <TimelineChart
-                    height={400}
-                    data={offlineChartData}
-                    titleMap={{
-                      y1: formatMessage({ id: 'app.analysis.traffic' }),
-                      y2: formatMessage({ id: 'app.analysis.payments' }),
-                    }}
+              <Row style={{ padding: '16px 0' }}>
+                <Col span={5}>
+                  <Pie
+                    animate={false}
+                    color="#e61818"
+                    percent={99}
+                    subTitle="紧急告警"
+                    total="99%"
+                    height={159}
+                    lineWidth={2}
                   />
-                </div>
-              </TabPane>
-            ))}
-          </Tabs>
-        </Card>
+                </Col>
+                <Col span={5}>
+                  <Pie
+                    animate={false}
+                    color="#1ee618"
+                    percent={22}
+                    subTitle="主要告警"
+                    total="22%"
+                    height={159}
+                    lineWidth={2}
+                  />
+                </Col>
+                <Col span={5}>
+                  <Pie
+                    animate={false}
+                    color="#eeef08"
+                    percent={32}
+                    subTitle="次要告警"
+                    total="32%"
+                    height={159}
+                    lineWidth={2}
+                  />
+                </Col>
+                <Col span={5}>
+                  <Pie
+                    animate={false}
+                    color="#08dcef"
+                    percent={32}
+                    subTitle="一般通知"
+                    total="32%"
+                    height={159}
+                    lineWidth={2}
+                  />
+                </Col>
+                <Col span={4}>
+                  <Pie
+                    animate={false}
+                    color="#0d1ace"
+                    percent={32}
+                    subTitle="恢复"
+                    total="32%"
+                    height={159}
+                    lineWidth={2}
+                  />
+                </Col>
+              </Row>
+            </Card>
       </GridContent>
     );
   }

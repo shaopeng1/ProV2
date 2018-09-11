@@ -141,7 +141,7 @@ export default function request(
         return;
       }
       // environment should not be used
-      if (status === 403) {
+     /* if (status === 403) {
         router.push('/exception/403');
         return;
       }
@@ -151,6 +151,6 @@ export default function request(
       }
       if (status >= 404 && status < 422) {
         router.push('/exception/404');
-      }
+      }*/
     });
 }

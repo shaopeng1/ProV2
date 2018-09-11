@@ -12,7 +12,6 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      console.log("payload+"+JSON.stringify(payload));
       const response = yield call(queryRule, payload);
       let res = JSON.parse(response);
       yield put({
@@ -26,7 +25,7 @@ export default {
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(); 
     },
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeRule, payload);

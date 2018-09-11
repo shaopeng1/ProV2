@@ -209,5 +209,5 @@ export default {
     'user.list.MSType' :'MS类型',
     'user.list.manufactor' :'厂家',
     'user.list.pleaseEnter' :'请输入',
-    
+    'user.list.queryForm' : '表格查询',
 };

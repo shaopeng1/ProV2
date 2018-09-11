@@ -214,4 +214,5 @@ export default {
     'user.list.manufactor' :'Manufactor',
     'user.list.updateDate' :'Update Date',
     'user.list.pleaseEnter' :'Please Enter',
+    'user.list.queryForm' : 'Query Form',
 };

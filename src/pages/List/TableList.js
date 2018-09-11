@@ -6,7 +6,6 @@ import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,Dat
         Steps,Radio,} from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-
 import styles from './TableList.less';
 
 const FormItem = Form.Item;
@@ -312,7 +311,9 @@ class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'rule/fetch',
-      payload: {},
+      payload: {
+        neType : '555',
+      },
     });
   }
 
@@ -583,7 +584,7 @@ class TableList extends PureComponent {
       handleUpdate: this.handleUpdate,
     };
     return (
-      <PageHeaderWrapper title="查询表格">
+      <PageHeaderWrapper title={ <FormattedMessage id="user.list.queryForm" defaultMessage="Query Form"/>}>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>

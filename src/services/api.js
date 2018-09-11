@@ -9,13 +9,41 @@ export async function queryActivities() {
   return request('/api/activities');
 }
 
+/***********************************************************************************************/
+//获取无线用户列表
 export async function queryRule(params) {
-  console.log("params+"+JSON.stringify(params))
   return request('/api/getList',{
     method: 'POST',
     body: params,
   });
 }
+
+//获取交换列表
+export async function changeType(params) {
+  return request('/api/changeType',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+//根据交换获取排名数
+export async function bSranking(params) {
+  console.log(params)
+  return request('/api/bSranking',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+//告警种类占比
+/*export async function fakeChartData() {
+  return request('/api/fakeChartData',{
+    method: 'POST',
+  });
+}*/
+
+/***********************************************************************************************/
 
 export async function removeRule(params) {
   return request('/api/rule', {
