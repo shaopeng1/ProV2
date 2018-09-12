@@ -28,8 +28,17 @@ export async function changeType(params) {
 
 //根据交换获取排名数
 export async function bSranking(params) {
-  console.log(params)
   return request('/api/bSranking',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+//获取无线用户详细信息
+export async function detailUser(params) {
+  console.log(params)
+  return request('/api/detailUser',{
     method: 'POST',
     body: params,
   });

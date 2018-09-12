@@ -27,6 +27,19 @@ export default {
       });
       if (callback) callback(); 
     },
+
+   /* *detailUser({ payload, callback }, { call, put }) {
+      const response = yield call(detailUser, payload);
+      let res = JSON.parse(response);
+      yield put({
+        type: 'clear',
+        payload: {
+         userDeta: res,  
+        }
+      });
+      if (callback) callback(); 
+    },*/
+
     *remove({ payload, callback }, { call, put }) {
       const response = yield call(removeRule, payload);
       yield put({
