@@ -37,8 +37,15 @@ export async function bSranking(params) {
 
 //获取无线用户详细信息
 export async function detailUser(params) {
-  console.log(params)
   return request('/api/detailUser',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+//获取老版数据
+export async function perList(params) {
+  return request('/api/perList',{
     method: 'POST',
     body: params,
   });

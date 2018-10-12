@@ -8,7 +8,7 @@ import NumberInfo from '@/components/NumberInfo';
 import numeral from 'numeral';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import Yuan from '@/utils/Yuan';
-import { changeType, } from '@/services/api';
+import { changeType,perList, } from '@/services/api';
 import { getTimeDistance } from '@/utils/utils';
 
 import styles from './Analysis.less';
@@ -19,6 +19,7 @@ const { RangePicker } = DatePicker;
 
 /*const rankingListData = [];*/
 const salesExtra = [];//查询
+const perCoum = [];//老版列表头数组
 const salesBS = [];//交换《option》
 
 /*for (let i = 0; i < 7; i += 1) {
@@ -46,7 +47,13 @@ class Analysis extends Component {
       salesType: 'all',
       currentTabKey: '',
       loading: true,
+      tablePer:'',//老版表头数据
+      tablePerData: '',//老版data
       selectBSData:'',//查询数据
+      data: {
+        list: [],
+        pagination: {},
+      },
       rangePickerValue: getTimeDistance('year'),
     };
   }
@@ -60,6 +67,7 @@ class Analysis extends Component {
   componentDidMount() {
     this.selectBS();
     this.netype(1);
+    this.selectPasPer();
     const { dispatch } = this.props;
     this.reqRef = requestAnimationFrame(() => {
       dispatch({
@@ -72,6 +80,41 @@ class Analysis extends Component {
       }, 600);
     });
   }
+
+  //获取老版数据
+  selectPasPer = e =>{
+    this.promise = perList({}).then(result =>{
+     /* perCoum.splice(0,perCoum.length);
+      let res  = JSON.parse(result);
+      //将对象的所有列名取出
+      let coum = [];
+      for(let c in res.total){
+        coum.push(
+            {c}
+          )
+      }
+      
+      for(let i = 0; i<res.indexs.length; i++ ){
+        //表头 
+        perCoum.push(
+          {
+            title: res.indexs[i].indexName,
+            dataIndex: coum[i].c,
+            key: res.indexs[i].startTime,//没有主键先拿时间替代
+          },
+        )  
+      }
+      this.setState({
+        tablePer : perCoum,
+        // data.list: res.list,
+        // data.pagination: res.pagination,
+        data:{
+          list: res.list,
+          pagination: res.pagination,
+        }
+      })*/
+    })
+  } 
 
   //根据交换获取排名数
   netype = (selectedKeys, info) =>{
@@ -100,7 +143,7 @@ class Analysis extends Component {
   //获取交换列表
   selectBS = e =>{
     this.promise = changeType({'neType' : e}).then(result => {
-      salesExtra.splice(0,salesExtra.length);
+/*      salesExtra.splice(0,salesExtra.length);
       let res = JSON.parse(result);
       this.loopBS(res.idName);
       salesExtra.push(
@@ -135,7 +178,7 @@ class Analysis extends Component {
         )
         this.setState({
           selectBSData:salesExtra,
-        })
+        })*/
     })
   }
 
@@ -198,7 +241,10 @@ class Analysis extends Component {
   }
 
   render() {
-    const { rangePickerValue, salesType, loading: propsLoding, currentTabKey } = this.state;
+
+    
+
+    const { rangePickerValue, salesType, loading: propsLoding, currentTabKey,data: { list, pagination } } = this.state;
     const { chart,chart:{ alarm } ,loading: stateLoading } = this.props;
     const {
       visitData,
@@ -212,6 +258,8 @@ class Analysis extends Component {
       salesTypeDataOnline,
       salesTypeDataOffline,
     } = chart;
+
+
     const loading = propsLoding || stateLoading;
     let salesPieData;
     if (salesType === 'all') {
@@ -618,6 +666,7 @@ class Analysis extends Component {
                 pagination={{
                   style: { marginBottom: 0 },
                   pageSize: 5,
+
                 }}
               />
             </Card>
@@ -675,6 +724,31 @@ class Analysis extends Component {
             </Card>
           </Col>
         </Row>
+
+        <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }} style={{ marginTop: 32 }}>
+          <div className={styles.salesCard}>
+            <Tabs tabBarExtraContent={this.state.selectBSData} size="large" tabBarStyle={{ marginBottom: 24 }}>
+              <TabPane
+                tab={<FormattedMessage id="app.analysis.sales" defaultMessage="Sales" />}
+                key="sales"
+              >
+                 <Table
+                  rowKey={record => record.index}
+                  size="small"
+                  columns={this.state.tablePer}
+                  dataSource={list}
+                  pagination={pagination}
+                />
+              </TabPane>
+              <TabPane
+                tab={<FormattedMessage id="app.analysis.visits" defaultMessage="Visits" />}
+                key="views"
+              >
+               
+              </TabPane>
+            </Tabs>
+          </div>
+        </Card>
 
         <Card 
           title="告警种类占比" 

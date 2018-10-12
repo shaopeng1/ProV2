@@ -38,14 +38,14 @@ export default {
     },
     *bSranking({ payload, callback }, { call, put }) {
       const response = yield call(bSranking, payload);
-      let res = JSON.parse(response);
+      /*let res = JSON.parse(response);
       yield put({
         type: 'save',
         payload: {
           salesData: res.XY,
           rankingListData: res.rankingListData,
         },
-      });
+      });*/
       if (callback) callback();
     },
 
