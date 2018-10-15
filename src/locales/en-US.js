@@ -14,6 +14,7 @@ export default {
   'menu.form.advancedform': 'Advanced Form',
   'menu.list': 'List',
   'menu.list.searchtable': 'Search Table',
+  'menu.list.measurelist': 'Measurement query',
   'menu.list.basiclist': 'Basic List',
   'menu.list.cardlist': 'Card List',
   'menu.list.searchlist': 'Search List',

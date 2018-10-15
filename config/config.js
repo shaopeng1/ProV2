@@ -41,7 +41,7 @@ export default {
   },
   proxy:{
     '/api':{
-      target:'http://10.8.57.211:8080/ENMS-web-main',
+      target:'http://10.8.57.67:8080/ENMS-web-main',
       changeOrigin : true,
       pathRewrite :{'^/ENMS-web-main/api':''}
     }

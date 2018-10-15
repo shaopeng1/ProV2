@@ -98,6 +98,11 @@ export default [
             component: './List/TableList',
           },
           {
+            path: '/list/measure-list',
+            name: 'measurelist',
+            component: './List/MeasureList',
+          },
+          {
             path: '/list/basic-list',
             name: 'basiclist',
             component: './List/BasicList',
