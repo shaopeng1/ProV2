@@ -5,8 +5,9 @@ import styles from './TableList.less';
 import { getTimeDistance } from '@/utils/utils';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
-import { changeNeTypeNew } from '@/services/performance';
+import { changeNeTypeNew,changeObj, } from '@/services/performance';
 import { formatMessage, FormattedMessage } from 'umi/locale';
+import SearchForm from './SearchForm';
 import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
         Steps,Radio,} from 'antd';
 
@@ -37,7 +38,7 @@ class MeasureList extends PureComponent {
   buildDictMsc = (name,dictItems)=>{
     const children = [];
     for(let i = 0; i < dictItems.length; i++){
-      children.push(<Option key = {dictItems[i].id} value = {dictItems[i].name} searchValue = {dictItems[i].name}> { dictItems[i].name } </Option>)
+      children.push(<Option key = {dictItems[i].id} value = {dictItems[i].id} searchValue = {dictItems[i].name}> { dictItems[i].name } </Option>)
     }
     return children;
   }
@@ -92,169 +93,35 @@ typeHandleChange = e => {
       })  
 }
 
+//切换交换时获取基站
+mscHandleChange = e =>{
+  console.log("交换+"+e)
+  const {neType} = this.state;
+  this.promise = changeObj({"selectObjValue":e,"selectObjType":"msc","neType":neType}).then((result)=>{
+    console.log("________________________________________________________")
+  })
+}
 
- 
- 
-//搜索条件
-renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-             <Col md={8} sm={24}>
-               <FormItem label={ "时间"} >
-                {getFieldDecorator('name')(
-                    <RangePicker
-                      ranges={{ '今天': [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
-                      showTime
-                      format="YYYY/MM/DD HH:mm:ss"
-                    />)}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-               <FormItem label={ '统计周期'} >
-                {getFieldDecorator('name1')(
-                   <Select  style={{ width: '100%' }}>
-                    <Option value="0">5分钟</Option>
-                    <Option value="1">60分钟</Option>   
-                    <Option value="2">每天</Option>
-                    <Option value="3">周</Option>
-                    <Option value="4">月</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
-            <Col md={8} sm={24}>
-               <FormItem label={ '对象类型'} >
-                {getFieldDecorator('name2')(
-                   <Select  style={{ width: '100%' }} onSelect={this.typeHandleChange}>
-                    <Option value="1">交换中心</Option>
-                    <Option value="2">基站</Option>   
-                    <Option value="3">调度</Option>
-                    <Option value="5">通话组</Option>
-                    <Option value="6">用户</Option>
-                    <Option value="7">虚拟专网</Option>
-                  </Select>)}
-              </FormItem>
-            </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-             <FormItem label={ '指标集' } >
-                {getFieldDecorator('name4')(
-                    <Select showSearch>
-                      {
-                        this.state.idNameList
-                      }
-                    </Select>
-                  )}
-            </FormItem>
-          </Col>
-
-          {
-            (this.state.neType == 1 || this.state.neType == 2 || this.state.neType == 3)?
-              <Col md={8} sm={24}>
-               <FormItem label={ '交换' }>
-                {getFieldDecorator('msc')(
-                   <Select showSearch>
-                     {
-                      this.state.mscList
-                     }
-                   </Select>
-                 )}
-              </FormItem>
-            </Col>
-            :null
-          }
-
-          {
-            this.state.neType == 2 ?
-              <Col md={8} sm={24}>
-                 <FormItem label={ '基站' }>
-                  {getFieldDecorator('jizhan')(
-                     <Select showSearch>
-                       {
-                        this.state.bsList
-                       }
-                     </Select>
-                   )}
-                </FormItem>
-             </Col>
-             :null
-          }
-          
-
-          {
-            this.state.neType == 3 ?
-              <Col md={8} sm={24}>
-                 <FormItem label={ '调度' }>
-                  {getFieldDecorator('调度')(
-                     <Select showSearch>
-                       {
-                        this.state.bsList
-                       }
-                     </Select>
-                   )}
-                </FormItem>
-             </Col>
-             :null
-          }
-
-          {
-            this.state.neType == 5 ?
-              <Col md={8} sm={24}>
-                 <FormItem label={ '通话组' }>
-                  {getFieldDecorator('通话组')(
-                     <Input/>
-                   )}
-                </FormItem>
-             </Col>
-             :null
-          }
-
-          {
-            this.state.neType == 6 ?
-              <Col md={8} sm={24}>
-                 <FormItem label={ '用户' }>
-                  {getFieldDecorator('用户')(
-                     <Input/>
-                   )}
-                </FormItem>
-             </Col>
-             :null
-          }
-          
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                <FormattedMessage id="user.select" defaultMessage="Select"/>
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                <FormattedMessage id="user.reset" defaultMessage="reset"/>
-              </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                <FormattedMessage id="user.takeUp" defaultMessage="Take up"/> <Icon type="down" />
-              </a>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
-
-
-    
+   
   render() {
 
-    const {idNameList,mscList,} = this.state;
-        
+    const {mscList,idNameList,neType,bsList} = this.state;
+
     return (
 
       <PageHeaderWrapper title={ <FormattedMessage id="menu.list.measurelist" defaultMessage="Query Form"/>}>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
+            <div className={styles.tableListForm}>
+               <SearchForm 
+                  typeHandleChange = { this.typeHandleChange }
+                  mscHandleChange = { this.mscHandleChange }
+                  mscList = { mscList }
+                  idNameList = { idNameList }
+                  neType = { neType }
+                  bsList = { bsList }
+                />
+            </div>
           </div> 
         </Card> 
       </PageHeaderWrapper>

@@ -11,3 +11,11 @@ export async function changeNeTypeNew(params) {
   });
 }
 
+
+//点击交换获取交换下基站
+export async function changeObj(params) {
+  return request('/api/changeObj',{
+    method: 'POST',
+    body: params,
+  });
+}
