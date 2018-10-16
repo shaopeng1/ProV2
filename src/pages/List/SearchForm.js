@@ -34,16 +34,34 @@ typeHandleChange = e =>{
 
 //选择交换
 mscHandleChange = e =>{
-	
 	const { mscHandleChange } = this.props;
 	mscHandleChange(e);
 }
 
+//通话组联想
+fetchGroup  = e =>{
+	const { getGSSIList } = this.props;
+	getGSSIList(e);
+}
 
-    
+//用户联想
+fetchUser  = e =>{
+	const { getISSIList } = this.props;
+	getISSIList(e);
+}
+
+ handleFormReset = () => {
+    const { form, dispatch } = this.props;
+    form.resetFields();
+  };
+
+  
+
+
+   
   render() {
 
-        const { form: { getFieldDecorator },mscList,idNameList,neType,bsList,} = this.props;
+        const { form: { getFieldDecorator },mscList,idNameList,neType,bsList,groupList,userList,} = this.props;
 
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -151,7 +169,11 @@ mscHandleChange = e =>{
               <Col md={8} sm={24}>
                  <FormItem label={ '通话组' }>
                   {getFieldDecorator('通话组')(
-                     <Input/>
+                     <Select showSearch onSearch={this.fetchGroup} >
+                     	{
+                     		groupList
+                     	}
+                     </Select>
                    )}
                 </FormItem>
              </Col>
@@ -163,7 +185,11 @@ mscHandleChange = e =>{
               <Col md={8} sm={24}>
                  <FormItem label={ '用户' }>
                   {getFieldDecorator('用户')(
-                     <Input/>
+                     <Select showSearch onSearch={this.fetchUser}>
+                     	{
+                     		userList
+                     	}
+                     </Select>
                    )}
                 </FormItem>
              </Col>
@@ -190,9 +216,6 @@ mscHandleChange = e =>{
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 <FormattedMessage id="user.reset" defaultMessage="reset"/>
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                <FormattedMessage id="user.takeUp" defaultMessage="Take up"/> <Icon type="down" />
-              </a>
             </span>
           </Col>
         </Row>

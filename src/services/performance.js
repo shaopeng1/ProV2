@@ -19,3 +19,22 @@ export async function changeObj(params) {
     body: params,
   });
 }
+
+
+//通话组联想
+export async function getGSSIList(params) {
+  return request('/api/getGSSIList',{
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+//用户联想
+export async function getISSIList(params) {
+  return request('/api/getISSIList',{
+    method: 'POST',
+    body: params,
+  });
+}
+

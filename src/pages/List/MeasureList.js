@@ -5,7 +5,7 @@ import styles from './TableList.less';
 import { getTimeDistance } from '@/utils/utils';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
-import { changeNeTypeNew,changeObj, } from '@/services/performance';
+import { changeNeTypeNew,changeObj,getGSSIList,getISSIList, } from '@/services/performance';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import SearchForm from './SearchForm';
 import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
@@ -31,6 +31,8 @@ class MeasureList extends PureComponent {
       idNameList: '',//真是显示指标集数据
       neType: 1,//对象类型
       bsList: '',//基站
+      groupList: '',//通话组搜索数据
+      userList: '',//用户数据
     };
   }
 
@@ -42,6 +44,16 @@ class MeasureList extends PureComponent {
     }
     return children;
   }
+
+  //遍历通话组、用户option
+  buildDictGroup = (name,dictItems)=>{
+    const children = [];
+    for(let i = 0; i < dictItems.length; i++){
+      children.push(<Option key = {dictItems[i].id} value = {dictItems[i].id} searchValue = {dictItems[i].name}> { dictItems[i].id +"/"+ dictItems[i].name } </Option>)
+    }
+    return children;
+  }
+
 
   //遍历指标集option
   buildDictIndex = (name,dictItems)=>{
@@ -63,6 +75,7 @@ class MeasureList extends PureComponent {
 //切换对象类型时触发
 typeHandleChange = e => {
   console.log("交换类型+"+e)
+
     this.promise = changeNeTypeNew({ "neType":e }).then((result) => {
         if(result.code == 200){
           let res = JSON.parse(result.resMap);
@@ -98,14 +111,58 @@ mscHandleChange = e =>{
   console.log("交换+"+e)
   const {neType} = this.state;
   this.promise = changeObj({"selectObjValue":e,"selectObjType":"msc","neType":neType}).then((result)=>{
-    console.log("________________________________________________________")
+    if(result.code == 200){
+      let res = JSON.parse(result.resMap);
+      let bs = this.buildDictMsc("idName",res.IdNames);//基站 /调度 
+      this.setState({
+        bsList: bs,
+      })
+    }else{
+        message.error('数据获取异常，请稍后重试');
+      }
+  })
+}
+
+//通话组联想
+getGSSIList = e =>{
+  console.log("通话组输入为+"+e)
+  this.promise = getGSSIList({"gId":e}).then((result)=>{
+    if(result.code == 200){
+       let res = JSON.parse(result.resMap);
+       if(res.gssiList != undefined){
+        let group = this.buildDictGroup("getGSSIList",res.gssiList);//通话组
+        this.setState({
+          groupList: group,
+        })
+       }
+    }else{
+       message.error('数据获取异常，请稍后重试');
+    }
+  })
+}
+
+//用户联想
+getISSIList = e =>{
+  console.log("用户+"+e)
+  this.promise = getISSIList({"uId":e}).then((result)=>{
+    if(result.code == 200){
+       let res = JSON.parse(result.resMap);
+       if(res.issiList != undefined){
+        let user = this.buildDictGroup("getISSIList",res.issiList);//用户
+        this.setState({
+          userList: user,
+        })
+       }
+    }else{
+       message.error('数据获取异常，请稍后重试');
+    }
   })
 }
 
    
   render() {
 
-    const {mscList,idNameList,neType,bsList} = this.state;
+    const {mscList,idNameList,neType,bsList,groupList,userList} = this.state;
 
     return (
 
@@ -116,10 +173,14 @@ mscHandleChange = e =>{
                <SearchForm 
                   typeHandleChange = { this.typeHandleChange }
                   mscHandleChange = { this.mscHandleChange }
+                  getGSSIList = { this.getGSSIList }
+                  getISSIList = { this.getISSIList }
                   mscList = { mscList }
                   idNameList = { idNameList }
                   neType = { neType }
                   bsList = { bsList }
+                  groupList = { groupList }
+                  userList  = { userList }
                 />
             </div>
           </div> 
