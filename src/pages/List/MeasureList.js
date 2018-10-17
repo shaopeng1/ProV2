@@ -5,9 +5,10 @@ import styles from './TableList.less';
 import { getTimeDistance } from '@/utils/utils';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment';
-import { changeNeTypeNew,changeObj,getGSSIList,getISSIList, } from '@/services/performance';
+import { changeNeTypeNew,changeObj,getGSSIList,getISSIList,getDataReport, } from '@/services/performance';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import SearchForm from './SearchForm';
+import PerDataList from './PerDataList';
 import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
         Steps,Radio,} from 'antd';
 
@@ -33,8 +34,12 @@ class MeasureList extends PureComponent {
       bsList: '',//基站
       groupList: '',//通话组搜索数据
       userList: '',//用户数据
+      columnList: '',//表头
     };
   }
+
+
+
 
  //遍历交换/基站option
   buildDictMsc = (name,dictItems)=>{
@@ -61,7 +66,7 @@ class MeasureList extends PureComponent {
     for(let i = 0; i < dictItems.length; i++){
       children.push(<Option 
                        key = {dictItems[i].indexSetId} 
-                       value = {dictItems[i].indexSetName} 
+                       value = {dictItems[i].indexSetId} 
                        searchValue = {dictItems[i].indexSetName}
                      > 
                      { dictItems[i].indexSetName } 
@@ -69,6 +74,52 @@ class MeasureList extends PureComponent {
      }
     return children;
   }
+
+  //查询按钮
+  handleSearch = e => {
+    debugger
+     const params = {
+        startTime: e.searchDate[0].format("YYYY-MM-DD HH:mm:ss"),
+        endTime: e.searchDate[1].format("YYYY-MM-DD HH:mm:ss"),
+        neType: this.state.neType,//对象类型
+        indexSetId: e.indexSetId,//指标集
+        objSelectMscId: e.objSelectMscId,//交换
+        objSelectBsId: e.objSelectBsId,//基站
+        targetObjId: e.targetObjId,//调度
+        pre: e.pre,//周期
+        gId: e.gId,//组标识
+        uId: e.uId,//用户标识
+     }
+     let perCoum = [];
+     this.promise = getDataReport(params).then((result)=>{
+       if(result.code == 200){
+          debugger;  
+          let res = JSON.parse(result.resMap);
+          perCoum.push(
+              {
+                title: '测量开始时间',
+                dataIndex: 'startTime',
+                key: 'startTime',//没有主键先拿时间替代
+              },
+          )
+          for(let i = 0; i<res.indexs.length; i++ ){
+            //表头 
+            perCoum.push(
+              {
+                title: res.indexs[i].indexName,
+                // dataIndex: coum[i].c,
+                key: res.indexs[i].indexId,//没有主键先拿时间替代
+              },
+            )
+          }
+          this.setState({
+              columnList: perCoum,
+            })  
+       }else{
+        message.error('数据获取异常，请稍后重试');
+       }
+     })
+  };
 
 
 
@@ -162,7 +213,7 @@ getISSIList = e =>{
    
   render() {
 
-    const {mscList,idNameList,neType,bsList,groupList,userList} = this.state;
+    const {mscList,idNameList,neType,bsList,groupList,userList,columnList} = this.state;
 
     return (
 
@@ -175,13 +226,16 @@ getISSIList = e =>{
                   mscHandleChange = { this.mscHandleChange }
                   getGSSIList = { this.getGSSIList }
                   getISSIList = { this.getISSIList }
+                  handleSearch = { this.handleSearch }
                   mscList = { mscList }
                   idNameList = { idNameList }
                   neType = { neType }
                   bsList = { bsList }
                   groupList = { groupList }
                   userList  = { userList }
+
                 />
+                <PerDataList columnList = { columnList }/>
             </div>
           </div> 
         </Card> 

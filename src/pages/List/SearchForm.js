@@ -6,11 +6,9 @@ import { formatMessage, FormattedMessage } from 'umi/locale';
 import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
         Steps,Radio,} from 'antd';
 
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
-
 
 export default
 @Form.create()
@@ -50,14 +48,27 @@ fetchUser  = e =>{
 	getISSIList(e);
 }
 
+//重置
  handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
   };
 
-  
-
-
+  //查询
+  handleSearch = e => {
+  	e.preventDefault();
+  	const { handleSearch } = this.props;
+     this.props.form.validateFields((errors, fieldsValue) => {
+	      if (errors) {
+	        return
+	      }
+	      const data = {
+	      	 ...fieldsValue,
+	      }
+	      console.log("查询数据",data);
+	      handleSearch(data);
+	    })
+  };
    
   render() {
 
@@ -68,7 +79,7 @@ fetchUser  = e =>{
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
              <Col md={8} sm={24}>
                <FormItem label={ "时间"} >
-                {getFieldDecorator('name')(
+                {getFieldDecorator('searchDate')(
                     <RangePicker
                       ranges={{ '今天': [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
                       showTime
@@ -78,9 +89,9 @@ fetchUser  = e =>{
             </Col>
             <Col md={8} sm={24}>
                <FormItem label={ '统计周期'} >
-                {getFieldDecorator('name1')(
-                   <Select  style={{ width: '100%' }} onSelect={this.mscHandleChange}>
-                    <Option value="5分钟">5分钟</Option>
+                {getFieldDecorator('pre')(
+                   <Select  style={{ width: '100%' }} >
+                    <Option value="0">5分钟</Option>
                     <Option value="1">60分钟</Option>   
                     <Option value="2">每天</Option>
                     <Option value="3">周</Option>
@@ -90,7 +101,7 @@ fetchUser  = e =>{
             </Col>
             <Col md={8} sm={24}>
                <FormItem label={ '对象类型'} >
-                {getFieldDecorator('name2')(
+                {getFieldDecorator('neType')(
                    <Select  style={{ width: '100%' }} onSelect={this.typeHandleChange}>
                     <Option value="1">交换中心</Option>
                     <Option value="2">基站</Option>   
@@ -105,7 +116,7 @@ fetchUser  = e =>{
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
              <FormItem label={ '指标集' } >
-                {getFieldDecorator('name4')(
+                {getFieldDecorator('indexSetId')(
                     <Select showSearch>
                       {
                         idNameList
@@ -119,7 +130,7 @@ fetchUser  = e =>{
             (neType == 1 || neType == 2 || neType == 3)?
               <Col md={8} sm={24}>
                <FormItem label={ '交换' } >
-                {getFieldDecorator('msc')(
+                {getFieldDecorator('objSelectMscId')(
                    <Select showSearch onSelect={this.mscHandleChange}>
                      {
                       mscList
@@ -135,7 +146,7 @@ fetchUser  = e =>{
             neType == 2 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '基站' }>
-                  {getFieldDecorator('jizhan')(
+                  {getFieldDecorator('objSelectBsId')(
                      <Select showSearch>
                        {
                         bsList
@@ -152,7 +163,7 @@ fetchUser  = e =>{
             neType == 3 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '调度' }>
-                  {getFieldDecorator('调度')(
+                  {getFieldDecorator('targetObjId')(
                      <Select showSearch>
                        {
                         bsList
@@ -168,7 +179,7 @@ fetchUser  = e =>{
             neType == 5 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '通话组' }>
-                  {getFieldDecorator('通话组')(
+                  {getFieldDecorator('gId')(
                      <Select showSearch onSearch={this.fetchGroup} >
                      	{
                      		groupList
@@ -184,7 +195,7 @@ fetchUser  = e =>{
             neType == 6 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '用户' }>
-                  {getFieldDecorator('用户')(
+                  {getFieldDecorator('uId')(
                      <Select showSearch onSearch={this.fetchUser}>
                      	{
                      		userList

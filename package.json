@@ -50,6 +50,7 @@
     "react-fittext": "^1.0.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.3.1",
+    "reqwest": "^2.0.5",
     "umi": "^2.1.2"
   },
   "devDependencies": {

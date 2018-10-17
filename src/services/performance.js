@@ -38,3 +38,12 @@ export async function getISSIList(params) {
   });
 }
 
+
+//获取查询列表数据
+export async function getDataReport(params) {
+  return request('/api/getDataReport',{
+    method: 'POST',
+    body: params,
+  });
+}
+
