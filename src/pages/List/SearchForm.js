@@ -10,6 +10,8 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
+const dateFormat = 'YYYY/MM/DD HH:mm:ss';
+
 export default
 @Form.create()
 @connect(({ list, loading }) => ({
@@ -79,8 +81,9 @@ fetchUser  = e =>{
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
              <Col md={8} sm={24}>
                <FormItem label={ "时间"} >
-                {getFieldDecorator('searchDate')(
+                {getFieldDecorator('searchDate')( 
                     <RangePicker
+                      defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
                       ranges={{ '今天': [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
                       showTime
                       format="YYYY/MM/DD HH:mm:ss"

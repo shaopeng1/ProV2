@@ -35,6 +35,7 @@ class MeasureList extends PureComponent {
       groupList: '',//通话组搜索数据
       userList: '',//用户数据
       columnList: '',//表头
+      perData: '',//查询结果数据
     };
   }
 
@@ -107,14 +108,16 @@ class MeasureList extends PureComponent {
             perCoum.push(
               {
                 title: res.indexs[i].indexName,
-                // dataIndex: coum[i].c,
-                key: res.indexs[i].indexId,//没有主键先拿时间替代
+                dataIndex: "s"+res.indexs[i].indexId,
+                key: res.indexs[i].indexId,
               },
             )
           }
           this.setState({
               columnList: perCoum,
-            })  
+              perData: res.list,
+            })
+        
        }else{
         message.error('数据获取异常，请稍后重试');
        }
@@ -164,7 +167,7 @@ mscHandleChange = e =>{
   this.promise = changeObj({"selectObjValue":e,"selectObjType":"msc","neType":neType}).then((result)=>{
     if(result.code == 200){
       let res = JSON.parse(result.resMap);
-      let bs = this.buildDictMsc("idName",res.IdNames);//基站 /调度 
+      let bs = this.buildDictMsc("idName",res.idNames);//基站 /调度 
       this.setState({
         bsList: bs,
       })
@@ -213,7 +216,9 @@ getISSIList = e =>{
    
   render() {
 
-    const {mscList,idNameList,neType,bsList,groupList,userList,columnList} = this.state;
+    console.log("结果数据"+this.state.perData)
+
+    const {mscList,idNameList,neType,bsList,groupList,userList,columnList,perData} = this.state;
 
     return (
 
@@ -235,7 +240,7 @@ getISSIList = e =>{
                   userList  = { userList }
 
                 />
-                <PerDataList columnList = { columnList }/>
+                <PerDataList columnList = { columnList } perData = { perData }/>
             </div>
           </div> 
         </Card> 
