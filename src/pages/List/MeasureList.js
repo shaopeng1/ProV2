@@ -36,7 +36,20 @@ class MeasureList extends PureComponent {
       userList: '',//用户数据
       columnList: '',//表头
       perData: '',//查询结果数据
+      searchLoading: true,
+      perItem: {
+        pre:'1',
+        neType:'1',
+        indexSetId:'交换中心话务量总计',
+        objSelectMscId:'',
+        objSelectBsId:'1',
+        targetObjId:'1',
+      },
     };
+  }
+
+  componentDidMount() {
+    this.typeHandleChange(1);
   }
 
 
@@ -136,7 +149,15 @@ typeHandleChange = e => {
           if(res.idName != undefined){
            let idname = this.buildDictMsc("idName",res.idName);//交换
             this.setState({
-             mscList: idname, 
+             mscList: idname,
+             perItem: {
+              pre:'1',
+              neType:'1',
+              indexSetId:'交换中心话务量总计',
+              objSelectMscId:res.idName[0].name,
+              objSelectBsId:'1',
+              targetObjId:'1',
+             } 
             }) 
           }
           if(res.indexSet != undefined){
@@ -218,7 +239,7 @@ getISSIList = e =>{
 
     console.log("结果数据"+this.state.perData)
 
-    const {mscList,idNameList,neType,bsList,groupList,userList,columnList,perData} = this.state;
+    const {mscList,idNameList,neType,bsList,groupList,userList,columnList,perData,perItem,searchLoading,} = this.state;
 
     return (
 
@@ -238,7 +259,8 @@ getISSIList = e =>{
                   bsList = { bsList }
                   groupList = { groupList }
                   userList  = { userList }
-
+                  perItem = { perItem }
+                  searchLoading = { searchLoading }
                 />
                 <PerDataList columnList = { columnList } perData = { perData }/>
             </div>

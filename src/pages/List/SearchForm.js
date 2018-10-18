@@ -4,13 +4,14 @@ import styles from './TableList.less';
 import moment from 'moment';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {Row,Col,Card,Form,Input,Select,Icon,Button,Dropdown,Menu,InputNumber,DatePicker,Modal,message,Badge,Divider,
-        Steps,Radio,} from 'antd';
+        Steps,Radio,Spin,} from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
-const dateFormat = 'YYYY/MM/DD HH:mm:ss';
+const date = new Date();
+const startDate=date.toLocaleDateString();//获取当前日期（年月日）
 
 export default
 @Form.create()
@@ -74,16 +75,25 @@ fetchUser  = e =>{
    
   render() {
 
-        const { form: { getFieldDecorator },mscList,idNameList,neType,bsList,groupList,userList,} = this.props;
+        const { form: { getFieldDecorator },mscList,idNameList,neType,bsList,groupList,userList,perItem,searchLoading,} = this.props;
+
 
     return (
+    <Spin spinning={ searchLoading }>
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
              <Col md={8} sm={24}>
                <FormItem label={ "时间"} >
-                {getFieldDecorator('searchDate')( 
+                {getFieldDecorator('searchDate',{
+                	initialValue:[moment(startDate).startOf('day'),moment(startDate).endOf('day')],
+                	rules: [
+			            {
+			             required: true, 
+			             message: '选择查询时间' ,
+			           },
+			        ],
+                })( 
                     <RangePicker
-                      defaultValue={[moment('2015/01/01', dateFormat), moment('2015/01/01', dateFormat)]}
                       ranges={{ '今天': [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
                       showTime
                       format="YYYY/MM/DD HH:mm:ss"
@@ -92,7 +102,15 @@ fetchUser  = e =>{
             </Col>
             <Col md={8} sm={24}>
                <FormItem label={ '统计周期'} >
-                {getFieldDecorator('pre')(
+                {getFieldDecorator('pre',{
+                	initialValue:perItem.pre,
+                	rules: [
+			            {
+			             required: true, 
+			             message: '请选择统计周期 !' ,
+			           },
+			        ],
+                    })(
                    <Select  style={{ width: '100%' }} >
                     <Option value="0">5分钟</Option>
                     <Option value="1">60分钟</Option>   
@@ -104,7 +122,15 @@ fetchUser  = e =>{
             </Col>
             <Col md={8} sm={24}>
                <FormItem label={ '对象类型'} >
-                {getFieldDecorator('neType')(
+                {getFieldDecorator('neType',{
+                	initialValue:perItem.neType,
+                	rules: [
+			            {
+			             required: true, 
+			             message: '请选择对象类型 !' ,
+			           },
+			        ],
+                    })(
                    <Select  style={{ width: '100%' }} onSelect={this.typeHandleChange}>
                     <Option value="1">交换中心</Option>
                     <Option value="2">基站</Option>   
@@ -119,7 +145,15 @@ fetchUser  = e =>{
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
              <FormItem label={ '指标集' } >
-                {getFieldDecorator('indexSetId')(
+                {getFieldDecorator('indexSetId',{
+                	initialValue:perItem.indexSetId,
+                	rules: [
+			            {
+			             required: true, 
+			             message: '指标集不能为空' ,
+			           },
+			        ],
+                })(
                     <Select showSearch>
                       {
                         idNameList
@@ -133,7 +167,15 @@ fetchUser  = e =>{
             (neType == 1 || neType == 2 || neType == 3)?
               <Col md={8} sm={24}>
                <FormItem label={ '交换' } >
-                {getFieldDecorator('objSelectMscId')(
+                {getFieldDecorator('objSelectMscId',{
+                	initialValue:perItem.objSelectMscId,
+                	rules: [
+			            {
+			             required: true, 
+			             message: '交换不能为空' ,
+			           },
+			        ],
+                })(
                    <Select showSearch onSelect={this.mscHandleChange}>
                      {
                       mscList
@@ -149,7 +191,15 @@ fetchUser  = e =>{
             neType == 2 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '基站' }>
-                  {getFieldDecorator('objSelectBsId')(
+                  {getFieldDecorator('objSelectBsId',{
+                  	initialValue:perItem.objSelectBsId,
+                  	rules: [
+			            {
+			             required: true, 
+			             message: '基站不能为空' ,
+			           },
+			        ],
+                  })(
                      <Select showSearch>
                        {
                         bsList
@@ -166,7 +216,15 @@ fetchUser  = e =>{
             neType == 3 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '调度' }>
-                  {getFieldDecorator('targetObjId')(
+                  {getFieldDecorator('targetObjId',{
+                  	initialValue:perItem.targetObjId,
+                  	rules: [
+			            {
+			             required: true, 
+			             message: '调度不能为空' ,
+			           },
+			        ],
+                  })(
                      <Select showSearch>
                        {
                         bsList
@@ -182,7 +240,14 @@ fetchUser  = e =>{
             neType == 5 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '通话组' }>
-                  {getFieldDecorator('gId')(
+                  {getFieldDecorator('gId',{
+                  	rules: [
+			            {
+			             required: true, 
+			             message: '通话组信息不能为空' ,
+			           },
+			        ],
+                  })(
                      <Select showSearch onSearch={this.fetchGroup} >
                      	{
                      		groupList
@@ -198,7 +263,14 @@ fetchUser  = e =>{
             neType == 6 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '用户' }>
-                  {getFieldDecorator('uId')(
+                  {getFieldDecorator('uId',{
+                  	rules: [
+			            {
+			             required: true, 
+			             message: '用户信息不能为空' ,
+			           },
+			        ],
+                  })(
                      <Select showSearch onSearch={this.fetchUser}>
                      	{
                      		userList
@@ -214,7 +286,14 @@ fetchUser  = e =>{
             neType == 7 ?
               <Col md={8} sm={24}>
                  <FormItem label={ '虚拟专网' }>
-                  {getFieldDecorator('虚拟专网')(
+                  {getFieldDecorator('虚拟专网',{
+                  	rules: [
+			            {
+			             required: true, 
+			             message: '虚拟专网不能为空' ,
+			           },
+			        ],
+                  })(
                      <Input/>
                    )}
                 </FormItem>
@@ -234,8 +313,7 @@ fetchUser  = e =>{
           </Col>
         </Row>
       </Form>
-     
-     
+     </Spin>
     );
   }
 }

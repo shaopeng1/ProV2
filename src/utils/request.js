@@ -1,5 +1,5 @@
 import fetch from 'dva/fetch';
-import { notification } from 'antd';
+import { notification,message } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
@@ -141,16 +141,16 @@ export default function request(
         return;
       }
       // environment should not be used
-     /* if (status === 403) {
-        router.push('/exception/403');
+      if (status === 403) {
+        message.error('数据获取异常，请稍后重试');
         return;
       }
       if (status <= 504 && status >= 500) {
-        router.push('/exception/500');
+        message.error('数据获取异常，请稍后重试');
         return;
       }
       if (status >= 404 && status < 422) {
-        router.push('/exception/404');
-      }*/
+        message.error('数据获取异常，请稍后重试');
+      }
     });
 }
