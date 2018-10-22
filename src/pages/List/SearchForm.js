@@ -75,8 +75,12 @@ fetchUser  = e =>{
    
   render() {
 
-        const { form: { getFieldDecorator },mscList,idNameList,neType,bsList,groupList,userList,perItem,searchLoading,} = this.props;
-
+        const { 
+        	form: { getFieldDecorator },mscList,idNameList,neType,
+            bsList,groupList,userList,searchLoading,defaultPre, 
+            defaultNeType,defaultIndexSetId, defaultObjSelectBsId, 
+            defaultObjSelectMscId,defaultTargetObjId,
+        } = this.props;
 
     return (
     <Spin spinning={ searchLoading }>
@@ -94,6 +98,7 @@ fetchUser  = e =>{
 			        ],
                 })( 
                     <RangePicker
+                      style={{width:400}}
                       ranges={{ '今天': [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
                       showTime
                       format="YYYY/MM/DD HH:mm:ss"
@@ -103,7 +108,7 @@ fetchUser  = e =>{
             <Col md={8} sm={24}>
                <FormItem label={ '统计周期'} >
                 {getFieldDecorator('pre',{
-                	initialValue:perItem.pre,
+                	initialValue:defaultPre,
                 	rules: [
 			            {
 			             required: true, 
@@ -123,7 +128,7 @@ fetchUser  = e =>{
             <Col md={8} sm={24}>
                <FormItem label={ '对象类型'} >
                 {getFieldDecorator('neType',{
-                	initialValue:perItem.neType,
+                	initialValue:defaultNeType,
                 	rules: [
 			            {
 			             required: true, 
@@ -146,7 +151,7 @@ fetchUser  = e =>{
           <Col md={8} sm={24}>
              <FormItem label={ '指标集' } >
                 {getFieldDecorator('indexSetId',{
-                	initialValue:perItem.indexSetId,
+                	initialValue:defaultIndexSetId,
                 	rules: [
 			            {
 			             required: true, 
@@ -168,7 +173,7 @@ fetchUser  = e =>{
               <Col md={8} sm={24}>
                <FormItem label={ '交换' } >
                 {getFieldDecorator('objSelectMscId',{
-                	initialValue:perItem.objSelectMscId,
+                	initialValue:defaultObjSelectMscId,
                 	rules: [
 			            {
 			             required: true, 
@@ -192,7 +197,7 @@ fetchUser  = e =>{
               <Col md={8} sm={24}>
                  <FormItem label={ '基站' }>
                   {getFieldDecorator('objSelectBsId',{
-                  	initialValue:perItem.objSelectBsId,
+                  	initialValue:defaultObjSelectBsId,
                   	rules: [
 			            {
 			             required: true, 
@@ -217,7 +222,7 @@ fetchUser  = e =>{
               <Col md={8} sm={24}>
                  <FormItem label={ '调度' }>
                   {getFieldDecorator('targetObjId',{
-                  	initialValue:perItem.targetObjId,
+                  	initialValue:defaultTargetObjId,
                   	rules: [
 			            {
 			             required: true, 

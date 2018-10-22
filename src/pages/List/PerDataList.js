@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import styles from './TableList.less';
-import StandardTable from '@/components/StandardTable';
 import {Table,} from 'antd';
-import reqwest from 'reqwest';
 
 export default
 @connect(({ list, loading }) => ({
@@ -14,19 +11,31 @@ class PerDataList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-        list:[],
+        
     };
   }
+
+  //翻页
+  handleTableChange = (pagination, filters, sorter) => {
+    this.props.onChange(pagination, filters, sorter);
+  };
  
+
   render() {
 
        const { columnList,perData,} = this.props;
 
     return (
-		<Table
-          columns={ columnList }
-          dataSource={ perData }
-         />
+      <div>
+  		  <Table
+            rowKey={record => record.id}
+            pagination={perData.pagination}
+            columns={ columnList }
+            scroll={{ x: 3000 }}
+            dataSource={ perData.data }
+            onChange={this.handleTableChange}
+           />
+      </div>
     );
   }
 }

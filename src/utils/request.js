@@ -141,7 +141,7 @@ export default function request(
         return;
       }
       // environment should not be used
-      if (status === 403) {
+      /*if (status === 403) {
         message.error('数据获取异常，请稍后重试');
         return;
       }
@@ -151,6 +151,6 @@ export default function request(
       }
       if (status >= 404 && status < 422) {
         message.error('数据获取异常，请稍后重试');
-      }
+      }*/
     });
 }
